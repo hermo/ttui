@@ -10,7 +10,7 @@ var box = blessed.box({
   left: 'center',
   width: '100%',
   height: '100%',
-  content: '{center}Loading tweets...{/center}',
+  content: '',
   tags: true,
   scrollable: true,
   alwaysScroll: true,
@@ -35,6 +35,15 @@ screen.key(['escape', 'q', 'C-c'], (ch, key) => {
   return process.exit(0)
 })
 
+screen.key(['u'], (ch, key) => {
+  updateTweets()
+})
+
+screen.key(['g'], (ch, key) => {
+  box.scrollTo(0)
+  screen.render()
+})
+
 
 screen.key(['j', 'k'], (ch, key) => {
   box.scroll(key.name == 'j' ? 1 : -1)
@@ -47,25 +56,31 @@ screen.render()
 var client = new Twitter(twitterconfig)
 var params = {screen_name: 'hermo'}
 
-client.get('statuses/home_timeline', params, (error, tweets, response) => {
-  if (error) {
-    box.setContent(`{bold}{red-fg}Twitter error: ${JSON.stringify(error)}{/}`)
-    screen.render()
-    setTimeout(() => process.exit(1), 5000)
-    return;
-  }
-
-  var frame = tweets.map(tweet => {
-    return {
-      created_at: tweet.created_at,
-      author: tweet.user.screen_name,
-      text: tweet.text
-    }
-  })
-  .map(tweet =>
-    `{bold}@{blue-fg}${tweet.author} - ${tweet.created_at}{/}\n${tweet.text}\n`)
-  .join("\n")
-  box.setContent(frame)
+function updateTweets() {
+  box.setContent('{center}Loading tweets...{/center}')
   screen.render()
-})
 
+  client.get('statuses/home_timeline', params, (error, tweets, response) => {
+    if (error) {
+      box.setContent(`{bold}{red-fg}Twitter error: ${JSON.stringify(error)}{/}`)
+      screen.render()
+      setTimeout(() => process.exit(1), 5000)
+      return;
+    }
+
+    var frame = tweets.map(tweet => {
+      return {
+        created_at: tweet.created_at,
+        author: tweet.user.screen_name,
+        text: tweet.text
+      }
+    })
+    .map(tweet =>
+      `{bold}@{blue-fg}${tweet.author} - ${tweet.created_at}{/}\n${tweet.text}\n`)
+    .join("\n")
+    box.setContent(frame)
+    screen.render()
+  })
+}
+
+updateTweets()
