@@ -1,0 +1,18 @@
+{
+  "name": "twittui",
+  "version": "0.0.1",
+  "description": "Text UI for twitter",
+  "main": "index.js",
+  "scripts": {
+    "start": "6to5-node index.js"
+  },
+  "author": "Mirko Grönroos",
+  "license": "MIT",
+  "dependencies": {
+    "blessed": "0.0.43",
+    "twitter": "^1.2.1"
+  },
+  "devDependencies": {
+    "6to5": "^3.3.3"
+  }
+}
