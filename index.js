@@ -12,6 +12,11 @@ var box = blessed.box({
   height: '100%',
   content: '{center}Loading tweets...{/center}',
   tags: true,
+  scrollable: true,
+  alwaysScroll: true,
+  scrollbar: {
+    bg: 'blue'
+  },
   border: {
     type: 'line'
   },
@@ -28,6 +33,12 @@ screen.append(box)
 
 screen.key(['escape', 'q', 'C-c'], (ch, key) => {
   return process.exit(0)
+})
+
+
+screen.key(['j', 'k'], (ch, key) => {
+  box.scroll(key.name == 'j' ? 1 : -1)
+  screen.render()
 })
 
 box.focus()
